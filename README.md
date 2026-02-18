@@ -21,14 +21,7 @@ npx @nesalia/create --list
 npx @nesalia/create --help
 ```
 
-## Available Templates
-
-- **basic** - Minimal project setup
-- **react** - React with Vite
-- **vue** - Vue 3 + Vite
-- **nextjs** - Next.js fullstack
-
-## Development
+## Contributing
 
 ```bash
 # Install dependencies
