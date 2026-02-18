@@ -106,7 +106,7 @@ jobs:
 
           claude_args: |
             --allowedTools "Bash(*),Read,Write,Edit,WebFetch"
-            --max-turns 50
+            --max-turns 100
 
         env:
           ANTHROPIC_BASE_URL: https://api.minimax.io/anthropic
