@@ -1,0 +1,13 @@
+[project]
+name = "@nesalia/template-cli-py"
+version = "0.1.0"
+description = "Python CLI template with typer and uv"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.nesalia]
+id = "cli-py"
+displayName = "CLI Python"
+description = "Python CLI with typer and uv"
+prompts = []
