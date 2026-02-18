@@ -22,7 +22,21 @@ jobs:
         with:
           fetch-depth: 1
 
+      - name: Check if comment is on a PR
+        id: check-pr
+        run: |
+          # Check if this issue is a PR
+          if [ -z "${{ github.event.issue.pull_request.html_url }}" ]; then
+            echo "This is not a PR, skipping"
+            echo "is_pr=false" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          echo "is_pr=true" >> $GITHUB_OUTPUT
+        shell: bash
+        continue-on-error: true
+
       - name: Generate Marty token
+        if: steps.check-pr.outputs.is_pr == 'true'
         id: marty-token
         uses: actions/create-github-app-token@v2
         with:
@@ -30,6 +44,7 @@ jobs:
           private-key: ${{ secrets.MARTY_APP_PRIVATE_KEY }}
 
       - name: Get PR number
+        if: steps.check-pr.outputs.is_pr == 'true'
         id: pr-info
         run: |
           # Handle both issue_comment on PR and pull_request_review_comment events
@@ -42,6 +57,7 @@ jobs:
         shell: bash
 
       - name: Marty Discusses in PR
+        if: steps.check-pr.outputs.is_pr == 'true'
         uses: nesalia-inc/marty-action@1.0.0
         with:
           github_token: ${{ steps.marty-token.outputs.token }}
