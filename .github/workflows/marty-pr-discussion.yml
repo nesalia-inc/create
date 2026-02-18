@@ -71,6 +71,10 @@ jobs:
             - Use Read tool to examine code files
             - Use Bash with gh commands to get PR info if needed
 
+          claude_args: |
+            --allowedTools "Bash(*),Read,Write,Edit,WebFetch"
+            --max-turns 30
+
         env:
           ANTHROPIC_BASE_URL: https://api.minimax.io/anthropic
           ANTHROPIC_AUTH_TOKEN: ${{ secrets.MINIMAX_API_KEY }}
