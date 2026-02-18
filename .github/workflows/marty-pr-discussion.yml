@@ -1,0 +1,79 @@
+name: Marty PR Discussion
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  discuss:
+    if: >
+      contains(github.event.issue.pull_request.url, 'pull_request') &&
+      contains(github.event.comment.body, '@martyy-code')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Generate Marty token
+        id: marty-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ secrets.MARTY_APP_ID }}
+          private-key: ${{ secrets.MARTY_APP_PRIVATE_KEY }}
+
+      - name: Get PR number
+        id: pr-info
+        run: |
+          PR_URL="${{ github.event.issue.pull_request.url }}"
+          PR_NUMBER=$(echo $PR_URL | grep -oP '/pulls/\K[0-9]+')
+          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+        shell: bash
+
+      - name: Marty Discusses in PR
+        uses: nesalia-inc/marty-action@1.0.0
+        with:
+          github_token: ${{ steps.marty-token.outputs.token }}
+          allowed_bots: '*'
+          prompt: |
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ steps.pr-info.outputs.pr_number }}
+            COMMENT AUTHOR: ${{ github.event.comment.user.login }}
+            COMMENT: ${{ github.event.comment.body }}
+
+            You are Marty, an AI coding assistant discussing in a Pull Request.
+
+            ## Your Task
+
+            1. Read the PR details (title, description, changed files)
+            2. Understand the context of the question/comment
+            3. Review the relevant code if needed
+            4. Provide a helpful, technical response
+
+            ## Discussion Guidelines
+
+            - Be concise but thorough
+            - Reference specific code lines when helpful
+            - Ask clarifying questions if something is unclear
+            - Suggest improvements or alternatives when relevant
+            - Be friendly and professional
+            - Don't mention that you're an AI
+
+            ## Important
+
+            - Use Read tool to examine code files
+            - Use Bash with gh commands to get PR info if needed
+
+        env:
+          ANTHROPIC_BASE_URL: https://api.minimax.io/anthropic
+          ANTHROPIC_AUTH_TOKEN: ${{ secrets.MINIMAX_API_KEY }}
+          ANTHROPIC_DEFAULT_SONNET_MODEL: MiniMax-M2.5
+          ANTHROPIC_DEFAULT_HAIKU_MODEL: MiniMax-M2.5
+          ANTHROPIC_DEFAULT_OPUS_MODEL: MiniMax-M2.5
