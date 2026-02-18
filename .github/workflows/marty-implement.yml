@@ -12,7 +12,9 @@ permissions:
 
 jobs:
   implement:
-    if: contains(github.event.comment.body, '@martyy-code')
+    if: |
+      contains(github.event.comment.body, '@martyy-code') &&
+      contains(github.event.comment.body, 'implement')
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
