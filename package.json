@@ -1,0 +1,39 @@
+{
+  "name": "@nesalia/templates",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "description": "Template registry for @nesalia/templates",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r vitest",
+    "test:watch": "pnpm -r --parallel vitest watch",
+    "test:coverage": "pnpm -r vitest run --coverage",
+    "lint": "pnpm -r exec eslint .",
+    "lint:fix": "pnpm -r exec eslint --fix .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "typecheck": "pnpm -r exec tsc --noEmit",
+    "changeset": "changeset",
+    "changeset:version": "changeset version",
+    "changeset:publish": "changeset publish",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.0",
+    "@eslint/js": "^9.0.0",
+    "@types/node": "^20.0.0",
+    "eslint": "^9.0.0",
+    "husky": "^9.0.0",
+    "prettier": "^3.0.0",
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0",
+    "typescript-eslint": "^8.0.0",
+    "vitest": "^2.0.0"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  }
+}

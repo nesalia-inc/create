@@ -1,0 +1,34 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+echo "Running pre-commit checks..."
+
+# Run type checking
+echo "Checking types..."
+pnpm -r exec tsc --noEmit || {
+  echo "Type check failed. Commit aborted."
+  exit 1
+}
+
+# Run linter
+echo "Running linter..."
+pnpm -r exec eslint . || {
+  echo "Lint check failed. Commit aborted."
+  exit 1
+}
+
+# Run tests
+echo "Running tests..."
+pnpm -r vitest run || {
+  echo "Tests failed. Commit aborted."
+  exit 1
+}
+
+# Run formatter check
+echo "Checking formatting..."
+pnpm exec prettier --check . || {
+  echo "Code is not formatted. Run 'pnpm format' to fix."
+  exit 1
+}
+
+echo "All checks passed! Proceeding with commit..."
