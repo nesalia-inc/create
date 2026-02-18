@@ -104,6 +104,10 @@ jobs:
             - Push the branch and create a PR using gh commands
             - AFTER creating the PR, print the PR number in this format: PR_CREATED: <number>
 
+          claude_args: |
+            --allowedTools "Bash(*),Read,Write,Edit,WebFetch"
+            --max-turns 50
+
         env:
           ANTHROPIC_BASE_URL: https://api.minimax.io/anthropic
           ANTHROPIC_AUTH_TOKEN: ${{ secrets.MINIMAX_API_KEY }}
