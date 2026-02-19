@@ -21,7 +21,11 @@ interface Options {
   help?: boolean;
 }
 
-async function copyDir(src: string, dest: string): Promise<void> {
+async function copyDir(
+  src: string,
+  dest: string,
+  variables: Record<string, string>
+): Promise<void> {
   await fs.mkdir(dest, { recursive: true });
   const entries = await fs.readdir(src, { withFileTypes: true });
 
@@ -30,9 +34,14 @@ async function copyDir(src: string, dest: string): Promise<void> {
     const destPath = path.join(dest, entry.name);
 
     if (entry.isDirectory()) {
-      await copyDir(srcPath, destPath);
+      await copyDir(srcPath, destPath, variables);
     } else {
-      await fs.copyFile(srcPath, destPath);
+      // Read file content, replace variables, write to destination
+      let content = await fs.readFile(srcPath, 'utf-8');
+      for (const [key, value] of Object.entries(variables)) {
+        content = content.replace(new RegExp(`\\{\\{${key}\\}\\}`, 'g'), value);
+      }
+      await fs.writeFile(destPath, content);
     }
   }
 }
@@ -40,17 +49,6 @@ async function copyDir(src: string, dest: string): Promise<void> {
 async function createProject(projectName: string, templateId: string): Promise<void> {
   const templateDir = path.join(TEMPLATES_DIR, `template-${templateId}`);
   const targetDir = path.join(process.cwd(), projectName);
-
-  // Check if project directory already exists (skip for current directory)
-  if (projectName !== '.') {
-    try {
-      await fs.access(targetDir);
-      console.error(`Error: Directory "${projectName}" already exists.`);
-      process.exit(1);
-    } catch {
-      // Directory doesn't exist, which is what we want
-    }
-  }
 
   // Check if template exists
   try {
@@ -66,11 +64,27 @@ async function createProject(projectName: string, templateId: string): Promise<v
     process.exit(1);
   }
 
-  // Copy template files
+  // Check if project directory already exists (skip for current directory)
+  if (projectName !== '.') {
+    try {
+      await fs.access(targetDir);
+      console.error(`Error: Directory "${projectName}" already exists.`);
+      process.exit(1);
+    } catch {
+      // Directory doesn't exist, which is what we want
+    }
+  }
+
+  // Variables for template substitution
+  const variables: Record<string, string> = {
+    name: projectName === '.' ? 'my-cli' : projectName,
+  };
+
+  // Copy template files with variable substitution
   console.log(
     `Creating project "${projectName === '.' ? 'current directory' : projectName}" from template "${templateId}"...`
   );
-  await copyDir(templateDir, targetDir);
+  await copyDir(templateDir, targetDir, variables);
 
   console.log('');
   console.log('✓ Project created successfully!');

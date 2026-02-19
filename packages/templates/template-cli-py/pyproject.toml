@@ -1,13 +1,26 @@
 [project]
-name = "@nesalia/template-cli-py"
+name = "{{name}}"
 version = "0.1.0"
-description = "Python CLI template with typer and uv"
+description = "My Python CLI"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = []
 
-[project.nesalia]
-id = "cli-py"
-displayName = "CLI Python"
-description = "Python CLI with typer and uv"
-prompts = []
+[project.scripts]
+{{name}} = "{{name}}.__main__:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "ruff>=0.4.0",
+    "pytest-cov>=4.0",
+]
+rich = [
+    "rich>=13.0.0",
+]
+
+[tool.ruff]
+line-length = 100
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

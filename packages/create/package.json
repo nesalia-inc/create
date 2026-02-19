@@ -14,7 +14,8 @@
   "scripts": {
     "dev": "tsx bin/create.js",
     "build": "tsc",
-    "prepublish": "node -e \"require('fs').cpSync('../templates', 'templates', {recursive: true})\"",
+    "copy-templates": "node scripts/copy-templates.js",
+    "prepublish": "node scripts/copy-templates.js",
     "test": "vitest"
   },
   "dependencies": {
