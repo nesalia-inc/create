@@ -49,7 +49,7 @@ function showHelp(): void {
 @nesalia/create - Create nesalia projects
 
 Usage:
-  npm init @nesalia/templates <project-name> [options]
+  npm init @nesalia/create <project-name> [options]
   npx @nesalia/create <project-name> [options]
 
 Options:
@@ -58,8 +58,8 @@ Options:
   -h, --help               Show this help message
 
 Examples:
-  npm init @nesalia/templates my-app
-  npm init @nesalia/templates my-app --template react
+  npm init @nesalia/create my-app
+  npm init @nesalia/create my-app --template react
   npx @nesalia/create my-app --template react --typescript
 
 Templates:
