@@ -1,5 +1,11 @@
 # @nesalia/create
 
+## 0.5.1
+
+### Patch Changes
+
+- 4dda252: Fix review comments: path traversal, bounds checking, dependencies
+
 ## 0.5.0
 
 ### Minor Changes
