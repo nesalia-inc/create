@@ -1,6 +1,6 @@
 {
   "name": "@nesalia/create",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Create nesalia projects",
   "license": "MIT",
   "type": "module",
@@ -14,6 +14,7 @@
   "scripts": {
     "dev": "tsx bin/create.js",
     "build": "tsc",
+    "prepublish": "node -e \"require('fs').cpSync('../templates', 'templates', {recursive: true})\"",
     "test": "vitest"
   },
   "dependencies": {
