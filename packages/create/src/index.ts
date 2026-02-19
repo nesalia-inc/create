@@ -39,13 +39,15 @@ async function createProject(projectName: string, templateId: string): Promise<v
   const templateDir = path.join(TEMPLATES_DIR, `template-${templateId}`);
   const targetDir = path.join(process.cwd(), projectName);
 
-  // Check if project directory already exists
-  try {
-    await fs.access(targetDir);
-    console.error(`Error: Directory "${projectName}" already exists.`);
-    process.exit(1);
-  } catch {
-    // Directory doesn't exist, which is what we want
+  // Check if project directory already exists (skip for current directory)
+  if (projectName !== '.') {
+    try {
+      await fs.access(targetDir);
+      console.error(`Error: Directory "${projectName}" already exists.`);
+      process.exit(1);
+    } catch {
+      // Directory doesn't exist, which is what we want
+    }
   }
 
   // Check if template exists
@@ -63,16 +65,20 @@ async function createProject(projectName: string, templateId: string): Promise<v
   }
 
   // Copy template files
-  console.log(`Creating project "${projectName}" from template "${templateId}"...`);
+  console.log(
+    `Creating project "${projectName === '.' ? 'current directory' : projectName}" from template "${templateId}"...`
+  );
   await copyDir(templateDir, targetDir);
 
   console.log('');
   console.log('✓ Project created successfully!');
   console.log('');
-  console.log('Next steps:');
-  console.log(`  cd ${projectName}`);
-  console.log('  # Add your CLI code');
-  console.log('');
+  if (projectName !== '.') {
+    console.log('Next steps:');
+    console.log(`  cd ${projectName}`);
+    console.log('  # Add your CLI code');
+    console.log('');
+  }
 }
 
 function parseArgs(args: string[]): { projectName?: string; options: Options } {
