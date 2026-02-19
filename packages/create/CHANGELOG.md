@@ -1,5 +1,23 @@
 # @nesalia/create
 
+## 0.3.0
+
+### Minor Changes
+
+- 8455d3e: Copy templates during prepublish so they are included in npm package
+
+## 0.2.2
+
+### Patch Changes
+
+- d24f89e: Fix templates path when running via npx
+
+## 0.2.1
+
+### Patch Changes
+
+- 328b7d5: Allow current directory as project target with "."
+
 ## 0.2.0
 
 ### Minor Changes
