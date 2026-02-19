@@ -1,5 +1,17 @@
 # @nesalia/create
 
+## 0.5.0
+
+### Minor Changes
+
+- 1017280: Add --name flag to CLI
+
+## 0.4.0
+
+### Minor Changes
+
+- 2b3cdb1: Add complete cli-py template with variable substitution
+
 ## 0.3.0
 
 ### Minor Changes
