@@ -13,9 +13,8 @@
   ],
   "scripts": {
     "dev": "tsx bin/create.js",
-    "build": "tsc",
+    "build": "tsc && node scripts/copy-templates.js",
     "copy-templates": "node scripts/copy-templates.js",
-    "prepublish": "node scripts/copy-templates.js",
     "test": "vitest"
   },
   "dependencies": {
