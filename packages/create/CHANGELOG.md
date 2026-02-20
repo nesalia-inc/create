@@ -1,5 +1,11 @@
 # @nesalia/create
 
+## 0.8.0
+
+### Minor Changes
+
+- 5edf1d5: Fix [build-system] in cli-py template for uv compatibility
+
 ## 0.7.3
 
 ### Patch Changes
