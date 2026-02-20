@@ -12,8 +12,8 @@ console.log('Copying templates from:', src);
 try {
   await fs.access(src);
 } catch {
-  console.error('Templates source not found:', src);
-  process.exit(1);
+  console.log('Templates source not found, skipping copy.');
+  process.exit(0);
 }
 
 console.log('Copying templates...');
