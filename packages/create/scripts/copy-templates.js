@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const src = path.resolve(__dirname, '..', '..', 'templates');
+const src = path.resolve(__dirname, '..', 'templates');
 const dest = path.join(__dirname, 'templates');
 
 console.log('Copying templates from:', src);
@@ -12,9 +12,8 @@ console.log('Copying templates from:', src);
 try {
   await fs.access(src);
 } catch {
-  // Source doesn't exist, skip copying (templates might already be in place)
-  console.log('Templates source not found, skipping copy.');
-  process.exit(0);
+  console.error('Templates source not found:', src);
+  process.exit(1);
 }
 
 console.log('Copying templates...');
