@@ -5,7 +5,7 @@
   "license": "MIT",
   "type": "module",
   "bin": {
-    "create-nesalia": "./bin/create.js"
+    "@nesalia/create": "./bin/create.js"
   },
   "files": [
     "dist",
