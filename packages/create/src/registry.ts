@@ -227,24 +227,16 @@ export const fetchTemplate = async (templateId: string): Promise<FetchedTemplate
 
     const tgzPath = path.join(tempDir, tgzFile);
 
-    // Extract tarball
-    execFileSync('tar', ['-xzf', tgzPath, '-C', tempDir], { stdio: 'pipe' });
+    // Extract tarball with --strip-components=1 to prevent path traversal
+    // This strips the first path component (package directory) from all entries,
+    // ensuring files are extracted directly into tempDir without traversal
+    execFileSync('tar', ['-xzf', tgzPath, '-C', tempDir, '--strip-components=1'], { stdio: 'pipe' });
 
-    // Find extracted package directory (usually starts with 'package')
-    const entries = await fs.readdir(tempDir);
-    const packageDir = entries.find(e => e.startsWith('package'));
-
-    if (!packageDir) {
-      throw new Error('Invalid template package: missing package directory');
-    }
-
-    const extractedDir = path.join(tempDir, packageDir);
-
-    // Validate manifest
-    const manifest = await validateTemplate(extractedDir, packageName);
+    // Validate extracted files before using them
+    const manifest = await validateTemplate(tempDir, packageName);
 
     return {
-      directory: extractedDir,
+      directory: tempDir,
       tempDirectory: tempDir,
       manifest,
     };
