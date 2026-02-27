@@ -215,7 +215,12 @@ export const fetchTemplate = async (templateId: string): Promise<FetchedTemplate
       encoding: 'utf-8',
     });
 
-    const tgzFile = packResult.trim().split('\n').pop();
+    // Parse output - filter for .tgz files to handle any warnings
+    const tgzFile = packResult
+      .trim()
+      .split('\n')
+      .find(line => line.endsWith('.tgz'));
+
     if (!tgzFile) {
       throw new Error(`Failed to download template: ${packageName}`);
     }
