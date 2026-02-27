@@ -18,11 +18,15 @@ const NPM_TIMEOUT = 60000; // 1 minute timeout for npm commands
 export const listTemplates = async (): Promise<DiscoveredTemplate[]> => {
   try {
     // Query npm registry for @nesalia/template-* packages
-    const result = execFileSync('npm', ['search', '@nesalia/template', '--json', '--searchlimit=100'], {
-      encoding: 'utf-8',
-      maxBuffer: 10 * 1024 * 1024,
-      timeout: NPM_TIMEOUT,
-    });
+    const result = execFileSync(
+      'npm',
+      ['search', '@nesalia/template', '--json', '--searchlimit=100'],
+      {
+        encoding: 'utf-8',
+        maxBuffer: 10 * 1024 * 1024,
+        timeout: NPM_TIMEOUT,
+      }
+    );
 
     const packages = JSON.parse(result);
 
@@ -54,7 +58,9 @@ export const listTemplates = async (): Promise<DiscoveredTemplate[]> => {
 
     return templates;
   } catch (error) {
-    throw new Error(`Failed to fetch templates from npm: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    throw new Error(
+      `Failed to fetch templates from npm: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
 };
 

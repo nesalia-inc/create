@@ -6,11 +6,7 @@ import enquirer from 'enquirer';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 
-import {
-  listTemplates,
-  fetchTemplate,
-  cleanupTemplate,
-} from './registry.js';
+import { listTemplates, fetchTemplate, cleanupTemplate } from './registry.js';
 import type { DiscoveredTemplate } from './types.js';
 
 interface Options {
@@ -45,10 +41,7 @@ async function copyDir(
   }
 }
 
-async function createProject(
-  projectName: string,
-  templateId: string
-): Promise<void> {
+async function createProject(projectName: string, templateId: string): Promise<void> {
   const cwd = process.cwd();
   const targetDir = path.join(cwd, projectName);
 
@@ -188,7 +181,9 @@ export async function run(args: string[]): Promise<void> {
   try {
     templates = await listTemplates();
   } catch (error) {
-    console.warn(`Warning: Could not fetch templates from npm: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    console.warn(
+      `Warning: Could not fetch templates from npm: ${error instanceof Error ? error.message : 'Unknown error'}`
+    );
   }
 
   if (options.help) {

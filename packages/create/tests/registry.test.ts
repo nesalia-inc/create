@@ -4,11 +4,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { execFileSync } from 'node:child_process';
-import {
-  listTemplates,
-  fetchTemplate,
-  cleanupTemplate,
-} from '../src/registry.js';
+import { listTemplates, fetchTemplate, cleanupTemplate } from '../src/registry.js';
 
 // Mock execFileSync
 vi.mock('node:child_process', async () => {
