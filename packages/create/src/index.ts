@@ -23,23 +23,17 @@ interface Options {
 async function copyDir(
   src: string,
   dest: string,
-  variables: Record<string, string>,
-  packageName?: string
+  variables: Record<string, string>
 ): Promise<void> {
   await fs.mkdir(dest, { recursive: true });
   const entries = await fs.readdir(src, { withFileTypes: true });
 
   for (const entry of entries) {
     const srcPath = path.join(src, entry.name);
-
-    // Handle directory renaming: src/my_cli -> src/{packageName}
-    let destPath = path.join(dest, entry.name);
-    if (entry.isDirectory() && entry.name === 'my_cli' && packageName) {
-      destPath = path.join(dest, packageName);
-    }
+    const destPath = path.join(dest, entry.name);
 
     if (entry.isDirectory()) {
-      await copyDir(srcPath, destPath, variables, packageName);
+      await copyDir(srcPath, destPath, variables);
     } else {
       // Read file content, replace variables, write to destination
       let content = await fs.readFile(srcPath, 'utf-8');
@@ -58,11 +52,11 @@ async function createProject(
   const cwd = process.cwd();
   const targetDir = path.join(cwd, projectName);
 
-  // Validate project name for Python package naming (snake_case)
-  const pythonPackageName = projectName === '.' ? 'my-cli' : projectName;
-  if (!/^[a-z][a-z0-9_]*$/.test(pythonPackageName)) {
+  // Validate project name (alphanumeric, hyphens, underscores)
+  const packageName = projectName === '.' ? 'my-project' : projectName;
+  if (!/^[a-zA-Z][a-zA-Z0-9_-]*$/.test(packageName)) {
     console.error(
-      `Error: Invalid project name "${pythonPackageName}". Python package names must be lowercase with underscores (e.g., my_cli, my_cli_app).`
+      `Error: Invalid project name "${packageName}". Project names must start with a letter and contain only letters, numbers, hyphens, and underscores.`
     );
     process.exit(1);
   }
@@ -94,12 +88,12 @@ async function createProject(
 
   // Variables for template substitution
   const variables: Record<string, string> = {
-    name: pythonPackageName,
+    name: packageName,
   };
 
   // Copy template files with variable substitution
   console.log(`Creating project "${projectName === '.' ? 'current directory' : projectName}"...`);
-  await copyDir(fetched.directory, targetDir, variables, pythonPackageName);
+  await copyDir(fetched.directory, targetDir, variables);
 
   // Cleanup temp directory
   await cleanupTemplate(fetched.tempDirectory);
@@ -193,8 +187,8 @@ export async function run(args: string[]): Promise<void> {
   let templates: DiscoveredTemplate[] = [];
   try {
     templates = await listTemplates();
-  } catch {
-    // Continue with empty templates list
+  } catch (error) {
+    console.warn(`Warning: Could not fetch templates from npm: ${error instanceof Error ? error.message : 'Unknown error'}`);
   }
 
   if (options.help) {
@@ -233,20 +227,19 @@ export async function run(args: string[]): Promise<void> {
   }
 
   if (!finalTemplate) {
-    // Use available templates or fallback to default
-    const choices =
-      templates.length > 0
-        ? templates.map(t => ({
-            name: t.id,
-            message: `${t.displayName} - ${t.description}`,
-          }))
-        : [{ name: 'cli-py', message: 'CLI Python - Python CLI with typer and uv' }];
+    if (templates.length === 0) {
+      console.error('Error: No templates available. Make sure you have internet access.');
+      process.exit(1);
+    }
 
     const response = await enquirer.prompt<{ template: string }>({
       type: 'select',
       name: 'template',
       message: 'Select a template:',
-      choices,
+      choices: templates.map(t => ({
+        name: t.id,
+        message: `${t.displayName} - ${t.description}`,
+      })),
       initial: 0,
     });
     finalTemplate = response.template;
